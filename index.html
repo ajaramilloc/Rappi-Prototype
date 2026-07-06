@@ -37,7 +37,7 @@
     margin-inline:auto; line-height:1.55}
 
   /* ---------- phone ---------- */
-  .device{position:relative}
+  .device{position:relative;width:100%;display:flex;justify-content:center}
   .phone{
     width:392px; height:812px; background:#000; border-radius:52px;
     padding:11px; box-shadow:0 40px 80px -30px rgba(22,25,46,.55), 0 0 0 2px #26283a inset;
@@ -261,10 +261,77 @@
 
   svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
+  .step .stephint{margin-left:auto;align-self:center;color:var(--coral-deep);font-weight:600;font-size:12.5px;
+    display:flex;align-items:center;gap:3px;flex:none}
+  .step.done .stephint{display:none}
+  .step:not(.done) .chk{display:none}
+
+  /* bottom sheet modal (inside phone) */
+  .sheet-backdrop{position:absolute;inset:0;z-index:60;background:rgba(22,25,46,.5);
+    display:none;align-items:flex-end;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+  .sheet-backdrop.open{display:flex;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .sheet{width:100%;background:#fff;border-radius:26px 26px 42px 42px;padding:10px 22px calc(22px + env(safe-area-inset-bottom));
+    transform:translateY(102%);transition:transform .34s cubic-bezier(.22,.61,.36,1);text-align:center}
+  .sheet-backdrop.open .sheet{transform:translateY(0)}
+  .grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:6px auto 14px}
+  .sheet-ic{width:66px;height:66px;border-radius:20px;background:var(--coral-soft);display:grid;place-items:center;
+    font-size:32px;margin:0 auto 14px}
+  .sheet-title{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em}
+  .sheet-desc{color:var(--ink-soft);font-size:14px;line-height:1.55;margin-top:9px}
+  .sheet-tips{margin:16px 0 18px;text-align:left;background:var(--bg);border-radius:16px;padding:12px 14px}
+  .sheet-tips .tip{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--ink);padding:5px 0;line-height:1.4}
+  .sheet-tips .tip svg{color:var(--coral);flex:none;margin-top:2px}
+  .sheet-step{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+  /* toast */
+  .toast{position:absolute;left:50%;bottom:22px;transform:translateX(-50%) translateY(18px);
+    background:var(--ink);color:#fff;padding:11px 16px;border-radius:13px;font-size:13px;font-weight:600;
+    display:flex;gap:8px;align-items:center;opacity:0;pointer-events:none;transition:.25s ease;z-index:70;
+    box-shadow:0 14px 32px -12px rgba(0,0,0,.55)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast svg{color:#3ee08a}
+
+  /* tappable affordances */
+  .tappable{cursor:pointer;position:relative;transition:transform .08s}
+  .tappable:active{transform:scale(.99)}
+  .taghint{position:absolute;right:12px;bottom:12px;z-index:4;background:rgba(22,25,46,.86);color:#fff;
+    border-radius:11px;padding:7px 10px;font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:5px}
+  .code .copy{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.85);
+    font-weight:600;margin-top:6px}
+
+  /* presenter control */
+  .set{margin-top:12px;border-top:1px dashed var(--line);padding-top:12px}
+  .set .lab{font-size:12px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;margin-bottom:9px}
+  .set .lab .tagp{background:var(--coral-soft);color:var(--coral-deep);font-size:10px;padding:2px 7px;border-radius:99px;letter-spacing:.04em}
+  .setrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .stepper{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:4px}
+  .stepper button{width:34px;height:34px;border-radius:9px;border:none;background:var(--bg);font-size:19px;
+    font-weight:700;cursor:pointer;color:var(--ink);display:grid;place-items:center;line-height:1}
+  .stepper button:hover{background:var(--coral-soft);color:var(--coral-deep)}
+  .stepper input{width:52px;height:34px;border:none;text-align:center;font-family:var(--display);font-weight:700;
+    font-size:17px;color:var(--ink);background:transparent;-moz-appearance:textfield}
+  .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .stepper .of{color:var(--muted);font-weight:600;font-size:13px;padding-right:6px}
+  .quickset{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 12px;font-family:var(--display);
+    font-weight:600;font-size:12.5px;cursor:pointer;color:var(--ink)}
+  .quickset:hover{border-color:var(--coral);color:var(--coral-deep)}
+
   @media (max-width:440px){
-    body{padding:20px 8px 40px}
-    .phone{width:100%;max-width:392px;height:min(812px,88vh)}
+    body{padding:14px 8px 26px;gap:14px}
+    .brief h1{font-size:19px}
+    .brief .eyebrow{font-size:10.5px}
+    .brief p{display:none}
+    .phone{width:100%;max-width:414px;height:calc(100dvh - 176px);min-height:548px;padding:9px;border-radius:42px}
+    .screen-wrap{border-radius:34px}
+    .flow{padding:12px 13px}
   }
+  @media (max-width:360px){
+    .phone{border-radius:36px;padding:7px}
+    .screen-wrap{border-radius:30px}
+    .body{padding:8px 15px 16px}
+  }
+
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important; transition:none !important}
   }
@@ -307,7 +374,7 @@
                 <div style="font-size:13px;color:rgba(255,255,255,.9);margin-top:3px;line-height:1.45">Completa tus primeros 10 pedidos. Te acompañamos en cada paso.</div>
               </div>
             </div>
-            <h1>¡Bienvenido, Alejandro!<br>Estás aprobado 🎉</h1>
+            <h1>¡Bienvenido, Camilo!<br>Estás aprobado 🎉</h1>
             <div class="lede">Los primeros pedidos son los que más importan. Vamos a hacerlos simples y rentables, juntos.</div>
           </div>
           <div class="foot">
@@ -326,25 +393,28 @@
           <div class="body">
             <div class="kicker">Onboarding · 30 segundos</div>
             <div class="h-lead" style="margin-top:6px">Toca cada paso para verlo</div>
-            <p class="sub">Así se ve un pedido de principio a fin. Cuando marques los tres, seguimos.</p>
+            <p class="sub">Ábrelos uno por uno para ver cómo funciona. Cuando veas los tres, seguimos.</p>
             <div style="margin-top:16px" id="howSteps">
-              <div class="step" data-ostep onclick="markStep(this)">
+              <div class="step" data-ostep onclick="openStepModal(0)">
                 <div class="n">1</div>
                 <div><div class="t">Recibe y acepta</div><div class="d">Te llega un pedido cercano con el pago ya calculado. Aceptas con un toque.</div></div>
+                <span class="stephint">Ver <svg class="i" style="width:15px;height:15px" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
                 <svg class="chk i" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
               </div>
-              <div class="step" data-ostep onclick="markStep(this)">
+              <div class="step" data-ostep onclick="openStepModal(1)">
                 <div class="n">2</div>
                 <div><div class="t">Recoge en el comercio</div><div class="d">Vas al restaurante o tienda, das el código y recoges el pedido.</div></div>
+                <span class="stephint">Ver <svg class="i" style="width:15px;height:15px" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
                 <svg class="chk i" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
               </div>
-              <div class="step" data-ostep onclick="markStep(this)">
+              <div class="step" data-ostep onclick="openStepModal(2)">
                 <div class="n">3</div>
                 <div><div class="t">Entrega y gana</div><div class="d">Llevas el pedido al cliente y tu ganancia entra al instante.</div></div>
+                <span class="stephint">Ver <svg class="i" style="width:15px;height:15px" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
                 <svg class="chk i" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
               </div>
             </div>
-            <div class="pill ink" id="howHint" style="margin-top:16px">Marca los 3 pasos para continuar</div>
+            <div class="pill ink" id="howHint" style="margin-top:16px">Toca cada paso para verlo</div>
           </div>
           <div class="foot">
             <button class="btn primary" id="howBtn" disabled style="opacity:.5;pointer-events:none"
@@ -363,7 +433,8 @@
             <div class="h-lead" style="margin-top:6px">Conéctate en Chapinero</div>
             <p class="sub">Ahí hay más pedidos cerca a esta hora. Empezar en la zona correcta hace tu primer pedido más rápido.</p>
 
-            <div class="map" style="margin-top:14px" aria-label="Mapa con zona recomendada">
+            <div class="map tappable" style="margin-top:14px" aria-label="Mapa con zona recomendada, toca para ver por qué"
+                 role="button" tabindex="0" onclick="openInfoSheet('zone')" onkeypress="if(event.key==='Enter')openInfoSheet('zone')">
               <svg viewBox="0 0 320 246" preserveAspectRatio="xMidYMid slice">
                 <g stroke="#dfe4ec" stroke-width="1.4">
                   <path d="M0 40H320M0 82H320M0 124H320M0 166H320M0 208H320"/>
@@ -378,6 +449,8 @@
                 <svg width="30" height="38" viewBox="0 0 30 38"><path d="M15 0C6.7 0 0 6.7 0 15c0 10 15 23 15 23s15-13 15-23C30 6.7 23.3 0 15 0z" fill="#FF441F"/><circle cx="15" cy="15" r="6" fill="#fff"/></svg>
               </div>
               <div class="youdot"><i></i></div>
+              <div class="taghint">Toca para ver por qué
+                <svg class="i" style="width:14px;height:14px" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
             </div>
 
             <div class="statgrid">
@@ -458,8 +531,9 @@
               <div style="font-size:12.5px;color:var(--ink-soft);margin-top:2px">Cra. 15 #93-60 · llegando en 4 min</div></div>
             </div>
 
-            <div class="code">
-              <div><div class="lab">Código del comercio</div><div style="font-size:12px;color:rgba(255,255,255,.75);margin-top:2px">Dáselo en la caja para recoger</div></div>
+            <div class="code tappable" role="button" tabindex="0" onclick="copyCode()" onkeypress="if(event.key==='Enter')copyCode()">
+              <div><div class="lab">Código del comercio</div><div style="font-size:12px;color:rgba(255,255,255,.75);margin-top:2px">Dáselo en la caja para recoger</div>
+              <div class="copy"><svg class="i" style="width:14px;height:14px" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Toca para copiar</div></div>
               <div class="num">4821</div>
             </div>
 
@@ -584,6 +658,21 @@
           </div>
         </section>
 
+        <!-- step detail pop-up -->
+        <div class="sheet-backdrop" id="sheetBack" onclick="closeStepModal(event)">
+          <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" onclick="event.stopPropagation()">
+            <div class="grab"></div>
+            <div class="sheet-step" id="sheetStep">Paso 1 de 3</div>
+            <div class="sheet-ic" id="sheetIc">📲</div>
+            <h3 class="sheet-title" id="sheetTitle"></h3>
+            <p class="sheet-desc" id="sheetDesc"></p>
+            <div class="sheet-tips" id="sheetTips"></div>
+            <button class="btn primary" id="sheetBtn" onclick="closeStepModal()">Entendido</button>
+          </div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+
         <div class="homebar" id="homebar"></div>
       </div>
     </div>
@@ -599,6 +688,22 @@
       <button class="navbtn reset" title="Reiniciar" onclick="resetProto()"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
     </div>
     <div class="foothint">Estado del contador de pedidos: <b id="stateLabel">0 / 10</b></div>
+
+    <div class="set">
+      <div class="lab"><span class="tagp">DEMO</span>Fijar pedidos completados (sin simular uno por uno)</div>
+      <div class="setrow">
+        <div class="stepper">
+          <button aria-label="Restar" onclick="setCompleted(completed-1)">−</button>
+          <input id="ordInput" type="number" min="0" max="10" value="0" aria-label="Número de pedidos"
+                 onchange="setCompleted(this.value)">
+          <span class="of">/ 10</span>
+          <button aria-label="Sumar" onclick="setCompleted(completed+1)">+</button>
+        </div>
+        <button class="quickset" onclick="setCompleted(0)">0</button>
+        <button class="quickset" onclick="setCompleted(5)">5</button>
+        <button class="quickset" onclick="setCompleted(10)">Meta · 10</button>
+      </div>
+    </div>
   </div>
 
 <script>
@@ -628,6 +733,8 @@ function setBars(){
   sb.classList.toggle('on-dark',dark); hb.classList.toggle('on-dark',dark);
 }
 function go(name){
+  const sb=document.getElementById('sheetBack');
+  if(sb){ sb.classList.remove('open'); pendingStep=null; }
   if(searchTimer){clearTimeout(searchTimer);searchTimer=null;}
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===name));
   current=name; renderChips(); setBars();
@@ -643,9 +750,50 @@ function step(d){
   go(ORDER[i]);
 }
 
-/* onboarding step marking */
-function markStep(el){
-  el.classList.toggle('done');
+/* onboarding — pop-up detail per step */
+const STEP_CONTENT=[
+  {ic:'📲', title:'Recibe y acepta',
+   desc:'Cuando estés en línea, te llega una notificación con un pedido cercano. Ves el comercio, la distancia y cuánto vas a ganar antes de decidir.',
+   tips:['Tienes unos segundos para aceptarlo','El pago ya viene calculado, sin sorpresas','Empieza por pedidos cerca para entregar más rápido']},
+  {ic:'🏪', title:'Recoge en el comercio',
+   desc:'La app te lleva hasta el restaurante o tienda. Das tu código en la caja y recoges el pedido para salir a entregar.',
+   tips:['Da el código del comercio para confirmar','Revisa que estén todos los productos antes de salir']},
+  {ic:'🛵', title:'Entrega y gana',
+   desc:'Navegas hasta el cliente, avisas por el chat de la app y marcas “entregado”. Tu ganancia entra al instante a tu billetera.',
+   tips:['Comunícate solo por el chat de la app','Una entrega amable sube tu calificación y te llegan mejores pedidos']}
+];
+let pendingStep=null;
+const INFO_SHEETS={
+  zone:{step:'Recomendación de hoy', ic:'🔥', title:'Por qué Chapinero',
+    desc:'Ahora mismo es la zona con más pedidos por repartidor cerca de ti. Empezar aquí acorta la espera de tu primer pedido y sube tu ganancia por hora.',
+    tips:['8 pedidos activos a menos de 1.5 km','Hora pico de almuerzo: 12:00–2:00 p.m.','Ganancia estimada: $14.000 por hora']}
+};
+function fillSheet(o){
+  const st=document.getElementById('sheetStep');
+  st.textContent=o.step||''; st.style.display=o.step?'block':'none';
+  document.getElementById('sheetIc').textContent=o.ic||'';
+  document.getElementById('sheetTitle').textContent=o.title||'';
+  document.getElementById('sheetDesc').textContent=o.desc||'';
+  const tp=document.getElementById('sheetTips');
+  const tips=o.tips||[];
+  tp.innerHTML=tips.map(t=>`<div class="tip"><svg class="i" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>${t}</span></div>`).join('');
+  tp.style.display=tips.length?'block':'none';
+  document.getElementById('sheetBtn').textContent=o.cta||'Entendido';
+  document.getElementById('sheetBack').classList.add('open');
+}
+function openStepModal(i){
+  pendingStep=i; const c=STEP_CONTENT[i];
+  fillSheet({step:'Paso '+(i+1)+' de 3', ic:c.ic, title:c.title, desc:c.desc, tips:c.tips});
+}
+function openInfoSheet(key){ pendingStep=null; fillSheet(INFO_SHEETS[key]); }
+function closeStepModal(e){
+  document.getElementById('sheetBack').classList.remove('open');
+  if(pendingStep!=null){
+    document.querySelectorAll('[data-ostep]')[pendingStep].classList.add('done');
+    pendingStep=null; updateHowGating();
+  }
+}
+function updateHowGating(){
   const total=document.querySelectorAll('[data-ostep]').length;
   const done=document.querySelectorAll('[data-ostep].done').length;
   const btn=document.getElementById('howBtn'), hint=document.getElementById('howHint');
@@ -654,7 +802,7 @@ function markStep(el){
     hint.textContent='¡Listo! Ya sabes cómo funciona'; hint.className='pill green';
   }else{
     btn.disabled=true; btn.style.opacity='.5'; btn.style.pointerEvents='none';
-    hint.textContent=`Marca los 3 pasos para continuar (${done}/3)`; hint.className='pill ink';
+    hint.textContent=`Toca cada paso para verlo (${done}/3)`; hint.className='pill ink';
   }
 }
 
@@ -670,26 +818,49 @@ function startOrderTimer(){
   },1000);
 }
 
-/* complete an order -> update rings */
-function completeOrder(){
-  completed=Math.min(10,completed+1);
-  updateRings();
+/* copy merchant code + toast */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.innerHTML='<svg class="i" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>'+msg;
+  t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1900);
+}
+function copyCode(){
+  try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText('4821').catch(()=>{}); } }catch(e){}
+  showToast('Código 4821 copiado');
+}
+
+const AMOUNTS=['+$6.800','+$7.400','+$5.900','+$8.200','+$6.100','+$7.800','+$6.500','+$9.100','+$7.000','+$8.600'];
+function refreshDoneScreen(){
   const title=document.getElementById('doneTitle');
   const msg=document.getElementById('doneMsg');
   const earn=document.querySelector('[data-screen="done"] .earn');
-  const amounts=['+$6.800','+$7.400','+$5.900','+$8.200','+$6.100','+$7.800','+$6.500','+$9.100','+$7.000','+$8.600'];
-  earn.textContent=amounts[(completed-1)%amounts.length];
-  if(completed===1){ title.textContent='¡Primer pedido completado!'; }
-  else if(completed>=10){ title.textContent='¡Meta cumplida! 10 pedidos 🏆'; }
-  else{ title.textContent=`¡Pedido ${completed} completado!`; }
-  const left=10-completed;
-  msg.textContent = completed>=10
+  const n=completed;
+  if(n<=0){ title.textContent='Aún sin pedidos'; earn.textContent='+$0';
+    msg.textContent='Completa tu primer pedido para empezar a avanzar en tu meta de la Semana 1.'; return; }
+  earn.textContent=AMOUNTS[(n-1)%AMOUNTS.length];
+  if(n===1) title.textContent='¡Primer pedido completado!';
+  else if(n>=10) title.textContent='¡Meta cumplida! 10 pedidos 🏆';
+  else title.textContent=`¡Pedido ${n} completado!`;
+  const left=10-n;
+  msg.textContent = n>=10
     ? '¡Completaste tu meta de la Semana 1! Ya tienes la experiencia completa desbloqueada.'
     : `¡Vas por buen camino! Falta${left===1?'':'n'} ${left} para completar tu meta de la Semana 1.`;
-  updateMilestones();
+}
+
+/* complete an order -> +1 and show done */
+function completeOrder(){
+  completed=Math.min(10,completed+1);
+  updateRings(); updateMilestones(); refreshDoneScreen();
   go('done');
 }
 function nextOrder(){ go('searching'); }
+
+/* presenter: set the completed count directly (no need to simulate) */
+function setCompleted(n){
+  n=parseInt(n,10); if(isNaN(n)) n=0;
+  completed=Math.max(0,Math.min(10,n));
+  updateRings(); updateMilestones(); refreshDoneScreen();
+}
 
 function updateRings(){
   const frac=completed/10;
@@ -701,6 +872,7 @@ function updateRings(){
   document.querySelectorAll('[data-ring-count]').forEach(n=>n.textContent=completed);
   const bar=document.getElementById('progBar'); if(bar) bar.style.width=(frac*100)+'%';
   document.getElementById('stateLabel').textContent=completed+' / 10';
+  const inp=document.getElementById('ordInput'); if(inp && +inp.value!==completed) inp.value=completed;
 }
 function updateMilestones(){
   const set=(sel,cls)=>document.querySelectorAll(sel).forEach(e=>e.className=cls);
@@ -713,13 +885,11 @@ function updateMilestones(){
   });
 }
 function resetProto(){
-  completed=0; updateRings(); updateMilestones();
+  completed=0; updateRings(); updateMilestones(); refreshDoneScreen();
+  pendingStep=null;
+  document.getElementById('sheetBack').classList.remove('open');
   document.querySelectorAll('[data-ostep].done').forEach(e=>e.classList.remove('done'));
-  markStep(document.createElement('div')); // recompute hint/btn
-  // reset how button explicitly
-  const btn=document.getElementById('howBtn'), hint=document.getElementById('howHint');
-  btn.disabled=true; btn.style.opacity='.5'; btn.style.pointerEvents='none';
-  hint.textContent='Marca los 3 pasos para continuar'; hint.className='pill ink';
+  updateHowGating();
   go('welcome');
 }
 
@@ -730,7 +900,8 @@ function tick(){
     d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');
 }
 tick(); setInterval(tick,30000);
-updateRings(); updateMilestones(); renderChips(); setBars();
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeStepModal(); });
+updateRings(); updateMilestones(); updateHowGating(); refreshDoneScreen(); renderChips(); setBars();
 </script>
 </body>
 </html>
