@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MVP · Onboarding de los primeros 10 pedidos — Rappi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#FF441F; --coral-deep:#E23411; --coral-soft:#FFEDE8;
+    --ink:#16192E; --ink-soft:#3A3F58; --muted:#8A8FA3;
+    --line:#ECEDF2; --bg:#EEF0F4; --card:#FFFFFF;
+    --green:#12B76A; --green-soft:#E7F7EF; --green-deep:#0E9257;
+    --display:'Poppins',system-ui,sans-serif;
+    --body:'Inter',system-ui,sans-serif;
+    --r:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:var(--body); color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #fff5f2 0%, transparent 55%),
+      radial-gradient(900px 500px at -10% 110%, #eef7f1 0%, transparent 55%),
+      var(--bg);
+    min-height:100vh; padding:34px 16px 60px;
+    display:flex; flex-direction:column; align-items:center; gap:22px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .brief{width:100%; max-width:920px; text-align:center}
+  .brief .eyebrow{font-family:var(--body); font-weight:600; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--coral)}
+  .brief h1{font-family:var(--display); font-weight:700; font-size:clamp(20px,3.4vw,30px);
+    line-height:1.12; margin-top:8px; letter-spacing:-.01em}
+  .brief p{color:var(--ink-soft); font-size:14.5px; margin-top:10px; max-width:640px;
+    margin-inline:auto; line-height:1.55}
+
+  /* ---------- phone ---------- */
+  .device{position:relative}
+  .phone{
+    width:392px; height:812px; background:#000; border-radius:52px;
+    padding:11px; box-shadow:0 40px 80px -30px rgba(22,25,46,.55), 0 0 0 2px #26283a inset;
+    position:relative;
+  }
+  .screen-wrap{position:relative; width:100%; height:100%; border-radius:42px; overflow:hidden;
+    background:var(--card)}
+  .statusbar{position:absolute; top:0; left:0; right:0; height:46px; z-index:40;
+    display:flex; align-items:center; justify-content:space-between; padding:0 26px;
+    font-size:13px; font-weight:600; color:var(--ink); pointer-events:none}
+  .statusbar.on-dark{color:#fff}
+  .statusbar .dots{display:flex; gap:5px; align-items:center}
+  .statusbar .sig{width:15px;height:9px;border-radius:2px;background:currentColor;opacity:.9}
+  .statusbar .bat{width:20px;height:10px;border:1.6px solid currentColor;border-radius:3px;position:relative;opacity:.9}
+  .statusbar .bat::after{content:"";position:absolute;top:2px;left:1.5px;bottom:2px;width:12px;background:currentColor;border-radius:1px}
+
+  /* screens */
+  .screen{position:absolute; inset:0; display:none; flex-direction:column;
+    padding-top:46px; background:var(--card)}
+  .screen.active{display:flex; animation:slide .34s cubic-bezier(.22,.61,.36,1)}
+  @keyframes slide{from{opacity:0; transform:translateX(14px)}to{opacity:1;transform:none}}
+  .appbar{display:flex; align-items:center; gap:10px; padding:6px 18px 4px; min-height:44px}
+  .iconbtn{width:34px;height:34px;border-radius:11px;border:1px solid var(--line);background:#fff;
+    display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:none}
+  .iconbtn:hover{background:var(--bg)}
+  .appbar h2{font-family:var(--display); font-weight:600; font-size:16px; letter-spacing:-.01em}
+  .appbar .spacer{flex:1}
+  .body{flex:1; overflow-y:auto; padding:8px 20px 18px}
+  .foot{padding:14px 20px calc(20px + env(safe-area-inset-bottom)); border-top:1px solid var(--line);
+    background:#fff}
+  .homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:128px;height:5px;
+    border-radius:3px;background:rgba(22,25,46,.28);z-index:45}
+  .homebar.on-dark{background:rgba(255,255,255,.55)}
+
+  /* buttons */
+  .btn{width:100%; border:none; border-radius:16px; padding:15px 18px; font-family:var(--display);
+    font-weight:600; font-size:15.5px; cursor:pointer; display:flex; align-items:center;
+    justify-content:center; gap:9px; transition:transform .08s, box-shadow .2s}
+  .btn:active{transform:scale(.978)}
+  .btn.primary{background:var(--coral); color:#fff; box-shadow:0 12px 24px -10px rgba(255,68,31,.7)}
+  .btn.primary:hover{background:var(--coral-deep)}
+  .btn.dark{background:var(--ink); color:#fff}
+  .btn.green{background:var(--green); color:#fff; box-shadow:0 12px 24px -10px rgba(18,183,106,.6)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  .btn.ghost:hover{background:var(--bg)}
+  .btn.sm{padding:11px 14px;font-size:13.5px;border-radius:13px}
+  .btnrow{display:flex;gap:10px;margin-top:10px}
+
+  .pill{display:inline-flex;align-items:center;gap:6px;background:var(--coral-soft);color:var(--coral-deep);
+    font-weight:600;font-size:12px;padding:6px 11px;border-radius:999px}
+  .pill.green{background:var(--green-soft);color:var(--green-deep)}
+  .pill.ink{background:var(--bg);color:var(--ink-soft)}
+
+  .h-lead{font-family:var(--display);font-weight:700;font-size:24px;line-height:1.15;letter-spacing:-.02em}
+  .sub{color:var(--ink-soft);font-size:14px;line-height:1.55;margin-top:8px}
+  .kicker{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--coral)}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+  .card+.card{margin-top:12px}
+  .soft{background:var(--bg);border:none}
+
+  /* progress ring */
+  .ring{--p:0; width:var(--rs,120px); height:var(--rs,120px); position:relative; flex:none}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .track{stroke:var(--line)}
+  .ring .fill{stroke:var(--coral); stroke-linecap:round;
+    transition:stroke-dashoffset .7s cubic-bezier(.22,.61,.36,1)}
+  .ring .lbl{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .ring .lbl b{font-family:var(--display);font-weight:700;font-size:26px;display:block;line-height:1}
+  .ring .lbl span{font-size:11px;color:var(--muted);font-weight:600}
+
+  /* welcome hero */
+  .hero{position:relative;background:linear-gradient(160deg,#FF6a4a 0%,var(--coral) 46%,var(--coral-deep) 100%);
+    color:#fff;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:26px 22px 22px;
+    overflow:hidden}
+  .hero .glow{position:absolute;border-radius:50%;filter:blur(2px);opacity:.5}
+  .hero .g1{width:220px;height:220px;background:radial-gradient(circle,#ffd9cc,transparent 62%);top:-40px;right:-40px}
+  .hero .g2{width:180px;height:180px;background:radial-gradient(circle,#ff8a6a,transparent 60%);top:120px;left:-50px}
+  .hero .wm{position:absolute;top:54px;left:22px;font-family:var(--display);font-weight:800;font-size:26px;
+    letter-spacing:-.02em}
+  .hero .ringwrap{background:rgba(255,255,255,.16);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.28);
+    border-radius:20px;padding:16px;display:flex;align-items:center;gap:16px;margin-bottom:20px}
+  .hero .ring .track{stroke:rgba(255,255,255,.28)} .hero .ring .fill{stroke:#fff}
+  .hero .ring .lbl b{color:#fff} .hero .ring .lbl span{color:rgba(255,255,255,.85)}
+  .hero h1{font-family:var(--display);font-weight:700;font-size:29px;line-height:1.1;letter-spacing:-.02em}
+  .hero .lede{margin-top:10px;font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.92);max-width:290px}
+
+  /* onboarding steps */
+  .step{display:flex;gap:13px;align-items:flex-start;padding:14px;border-radius:16px;border:1px solid var(--line);
+    background:#fff;cursor:pointer;transition:.18s}
+  .step+.step{margin-top:10px}
+  .step .n{width:30px;height:30px;border-radius:10px;background:var(--coral-soft);color:var(--coral-deep);
+    display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:14px;flex:none}
+  .step .t{font-family:var(--display);font-weight:600;font-size:15px}
+  .step .d{font-size:13px;color:var(--ink-soft);margin-top:3px;line-height:1.45}
+  .step.done{border-color:var(--green);background:var(--green-soft)}
+  .step.done .n{background:var(--green);color:#fff}
+  .step .chk{margin-left:auto;color:var(--green);opacity:0;flex:none;align-self:center}
+  .step.done .chk{opacity:1}
+
+  /* map / heatmap */
+  .map{position:relative;height:246px;border-radius:16px;overflow:hidden;border:1px solid var(--line);
+    background:#eef1f5}
+  .map svg{position:absolute;inset:0;width:100%;height:100%}
+  .heat{position:absolute;width:150px;height:150px;border-radius:50%;left:52%;top:44%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle,rgba(255,68,31,.55) 0%,rgba(255,68,31,.28) 42%,transparent 70%);
+    animation:breathe 3.4s ease-in-out infinite}
+  @keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.12)}}
+  .pin{position:absolute;left:52%;top:44%;transform:translate(-50%,-100%);z-index:3}
+  .youdot{position:absolute;left:26%;top:72%;width:16px;height:16px;transform:translate(-50%,-50%);z-index:3}
+  .youdot i{position:absolute;inset:0;border-radius:50%;background:#2E6BFF;border:2.5px solid #fff;
+    box-shadow:0 0 0 4px rgba(46,107,255,.25)}
+  .maptag{position:absolute;left:12px;top:12px;z-index:4;background:rgba(255,255,255,.94);
+    border-radius:12px;padding:8px 11px;font-size:12px;font-weight:600;color:var(--ink);
+    box-shadow:0 6px 16px -8px rgba(22,25,46,.4)}
+  .statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .stat{background:var(--bg);border-radius:14px;padding:13px}
+  .stat .k{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+  .stat .v{font-family:var(--display);font-weight:700;font-size:18px;margin-top:3px}
+  .stat .v small{font-weight:500;font-size:12px;color:var(--ink-soft)}
+
+  /* searching */
+  .searching{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:30px;background:
+    radial-gradient(400px 400px at 50% 42%, #fff2ee 0%, #fff 70%)}
+  .radar{width:170px;height:170px;border-radius:50%;position:relative;margin-bottom:26px;
+    border:1.5px solid var(--coral-soft)}
+  .radar::before,.radar::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--coral);
+    opacity:0;animation:ping 2.4s ease-out infinite}
+  .radar::after{animation-delay:1.2s}
+  @keyframes ping{0%{transform:scale(.35);opacity:.7}100%{transform:scale(1);opacity:0}}
+  .radar .moto{position:absolute;inset:0;display:grid;place-items:center;font-size:44px}
+  .online-chip{position:absolute;top:52px;left:50%;transform:translateX(-50%);z-index:5}
+
+  /* order card */
+  .orderhead{display:flex;gap:12px;align-items:center}
+  .logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#FFB47A,#FF6a4a);
+    display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:700;font-size:20px;flex:none}
+  .pay{font-family:var(--display);font-weight:700;font-size:26px;color:var(--ink)}
+  .route{margin-top:14px}
+  .route .leg{display:flex;gap:12px;align-items:flex-start;position:relative;padding-bottom:16px}
+  .route .leg:last-child{padding-bottom:0}
+  .route .dot{width:12px;height:12px;border-radius:50%;margin-top:3px;flex:none;z-index:2}
+  .route .dot.a{background:var(--coral)} .route .dot.b{background:var(--ink)}
+  .route .leg::before{content:"";position:absolute;left:5px;top:14px;bottom:-2px;width:2px;
+    background:var(--line)}
+  .route .leg:last-child::before{display:none}
+  .route .pl{font-family:var(--display);font-weight:600;font-size:14px}
+  .route .ad{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+  .coach{display:flex;gap:11px;background:var(--coral-soft);border:1px solid #ffdccf;border-radius:15px;
+    padding:13px;margin-top:0}
+  .coach .ic{flex:none;font-size:18px}
+  .coach b{font-family:var(--display);font-size:13.5px;color:var(--coral-deep)}
+  .coach p{font-size:12.5px;color:#7a3320;margin-top:2px;line-height:1.45}
+
+  /* guided steps checklist */
+  .glist{margin-top:4px}
+  .gitem{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px dashed var(--line)}
+  .gitem:last-child{border-bottom:none}
+  .gitem .b{width:26px;height:26px;border-radius:8px;background:var(--bg);display:grid;place-items:center;
+    font-size:15px;flex:none;margin-top:1px}
+  .gitem .tt{font-family:var(--display);font-weight:600;font-size:14px}
+  .gitem .dd{font-size:12.5px;color:var(--ink-soft);margin-top:2px;line-height:1.45}
+  .code{display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:#fff;
+    border-radius:14px;padding:14px 16px;margin-top:12px}
+  .code .lab{font-size:11px;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+  .code .num{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:.18em}
+
+  /* success */
+  .done-hero{background:linear-gradient(165deg,#25c97d,var(--green) 60%,var(--green-deep));color:#fff;
+    padding:40px 24px 26px;text-align:center;position:relative;overflow:hidden}
+  .done-hero .burst{width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.18);
+    display:grid;place-items:center;margin:0 auto 16px;font-size:46px;
+    animation:pop .5s cubic-bezier(.2,1.3,.4,1)}
+  @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+  .done-hero h1{font-family:var(--display);font-weight:700;font-size:24px}
+  .done-hero .earn{font-family:var(--display);font-weight:800;font-size:40px;margin-top:6px;letter-spacing:-.01em}
+  .done-hero .earn small{font-size:15px;font-weight:600;opacity:.9;vertical-align:middle}
+  .done-hero p{opacity:.92;font-size:13.5px;margin-top:4px}
+
+  /* milestone tracker */
+  .track-item{display:flex;gap:13px;align-items:center;padding:14px;border-radius:16px;border:1px solid var(--line);
+    background:#fff}
+  .track-item+.track-item{margin-top:10px}
+  .track-item.cur{border-color:var(--coral);background:var(--coral-soft)}
+  .track-item.locked{opacity:.62}
+  .track-item .badge{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex:none;
+    font-family:var(--display);font-weight:700;font-size:13px;color:#fff;background:var(--ink);line-height:1.05;text-align:center}
+  .track-item.cur .badge{background:var(--coral)}
+  .track-item.locked .badge{background:#c7cad6}
+  .track-item .tl{font-family:var(--display);font-weight:600;font-size:14.5px}
+  .track-item .dl{font-size:12.5px;color:var(--ink-soft);margin-top:2px;line-height:1.4}
+  .track-item .lock{margin-left:auto;color:var(--muted);flex:none}
+  .barwrap{height:9px;background:var(--line);border-radius:99px;overflow:hidden;margin:2px 0 4px}
+  .barwrap i{display:block;height:100%;background:var(--coral);border-radius:99px;transition:width .7s cubic-bezier(.22,.61,.36,1)}
+
+  /* flow nav under phone */
+  .flow{width:100%;max-width:560px;background:#fff;border:1px solid var(--line);border-radius:20px;
+    padding:14px 16px;box-shadow:0 20px 40px -28px rgba(22,25,46,.4)}
+  .flow .ttl{font-family:var(--display);font-weight:600;font-size:13px;color:var(--ink);display:flex;
+    align-items:center;gap:8px;margin-bottom:11px}
+  .flow .ttl .d{width:7px;height:7px;border-radius:50%;background:var(--coral)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{border:1px solid var(--line);background:#fff;color:var(--ink-soft);border-radius:999px;
+    padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--body);transition:.15s;
+    display:flex;align-items:center;gap:6px}
+  .chip .i{width:17px;height:17px;border-radius:50%;background:var(--bg);color:var(--muted);display:grid;
+    place-items:center;font-size:10px;font-weight:700}
+  .chip:hover{border-color:var(--coral);color:var(--coral-deep)}
+  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip.active .i{background:rgba(255,255,255,.22);color:#fff}
+  .flow .row{display:flex;gap:9px;margin-top:12px}
+  .navbtn{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px;
+    font-family:var(--display);font-weight:600;font-size:13px;cursor:pointer;color:var(--ink);
+    display:flex;align-items:center;justify-content:center;gap:7px}
+  .navbtn:hover{background:var(--bg)}
+  .navbtn.reset{flex:none;width:44px;color:var(--muted)}
+  .foothint{font-size:11.5px;color:var(--muted);text-align:center;margin-top:4px}
+
+  svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  @media (max-width:440px){
+    body{padding:20px 8px 40px}
+    .phone{width:100%;max-width:392px;height:min(812px,88vh)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important}
+  }
+</style>
+</head>
+<body>
+
+  <div class="brief">
+    <div class="eyebrow">Rappi · Fleet / Fulfillment — Prototipo navegable</div>
+    <h1>Onboarding progresivo de los primeros 10 pedidos</h1>
+    <p>La apuesta del caso: guiar al repartidor nuevo con onboarding interactivo, recomendación de zona y hora antes de conectarse, y guía paso a paso en el primer pedido — para subir la activación de la Semana 1.</p>
+  </div>
+
+  <div class="device">
+    <div class="phone">
+      <div class="screen-wrap">
+
+        <!-- status bar -->
+        <div class="statusbar" id="statusbar">
+          <span id="clock">9:41</span>
+          <span class="dots"><span class="sig"></span><span class="bat"></span></span>
+        </div>
+
+        <!-- 1 · WELCOME -->
+        <section class="screen active" data-screen="welcome">
+          <div class="hero">
+            <div class="glow g1"></div><div class="glow g2"></div>
+            <div class="wm">Rappi</div>
+            <div class="ringwrap">
+              <div class="ring" data-ring style="--rs:74px">
+                <svg width="74" height="74" viewBox="0 0 74 74">
+                  <circle class="track" cx="37" cy="37" r="31" fill="none" stroke-width="7"></circle>
+                  <circle class="fill" cx="37" cy="37" r="31" fill="none" stroke-width="7"
+                    stroke-dasharray="194.8" stroke-dashoffset="194.8"></circle>
+                </svg>
+                <div class="lbl"><b data-ring-count>0</b><span>de 10</span></div>
+              </div>
+              <div>
+                <div style="font-family:var(--display);font-weight:600;font-size:15px">Tu meta de la Semana 1</div>
+                <div style="font-size:13px;color:rgba(255,255,255,.9);margin-top:3px;line-height:1.45">Completa tus primeros 10 pedidos. Te acompañamos en cada paso.</div>
+              </div>
+            </div>
+            <h1>¡Bienvenido, Camilo!<br>Estás aprobado 🎉</h1>
+            <div class="lede">Los primeros pedidos son los que más importan. Vamos a hacerlos simples y rentables, juntos.</div>
+          </div>
+          <div class="foot">
+            <button class="btn primary" onclick="go('how')">Empezar
+              <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- 2 · HOW IT WORKS (interactive onboarding) -->
+        <section class="screen" data-screen="how">
+          <div class="appbar">
+            <button class="iconbtn" aria-label="Atrás" onclick="go('welcome')"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <h2>Cómo funciona un pedido</h2>
+          </div>
+          <div class="body">
+            <div class="kicker">Onboarding · 30 segundos</div>
+            <div class="h-lead" style="margin-top:6px">Toca cada paso para verlo</div>
+            <p class="sub">Así se ve un pedido de principio a fin. Cuando marques los tres, seguimos.</p>
+            <div style="margin-top:16px" id="howSteps">
+              <div class="step" data-ostep onclick="markStep(this)">
+                <div class="n">1</div>
+                <div><div class="t">Recibe y acepta</div><div class="d">Te llega un pedido cercano con el pago ya calculado. Aceptas con un toque.</div></div>
+                <svg class="chk i" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div class="step" data-ostep onclick="markStep(this)">
+                <div class="n">2</div>
+                <div><div class="t">Recoge en el comercio</div><div class="d">Vas al restaurante o tienda, das el código y recoges el pedido.</div></div>
+                <svg class="chk i" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div class="step" data-ostep onclick="markStep(this)">
+                <div class="n">3</div>
+                <div><div class="t">Entrega y gana</div><div class="d">Llevas el pedido al cliente y tu ganancia entra al instante.</div></div>
+                <svg class="chk i" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+            </div>
+            <div class="pill ink" id="howHint" style="margin-top:16px">Marca los 3 pasos para continuar</div>
+          </div>
+          <div class="foot">
+            <button class="btn primary" id="howBtn" disabled style="opacity:.5;pointer-events:none"
+              onclick="go('zone')">Entendido, continuar</button>
+          </div>
+        </section>
+
+        <!-- 3 · ZONE & PEAK HOUR (signature) -->
+        <section class="screen" data-screen="zone">
+          <div class="appbar">
+            <button class="iconbtn" aria-label="Atrás" onclick="go('how')"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <h2>Antes de conectarte</h2>
+          </div>
+          <div class="body">
+            <div class="kicker">Recomendación para hoy</div>
+            <div class="h-lead" style="margin-top:6px">Conéctate en Chapinero</div>
+            <p class="sub">Ahí hay más pedidos cerca a esta hora. Empezar en la zona correcta hace tu primer pedido más rápido.</p>
+
+            <div class="map" style="margin-top:14px" aria-label="Mapa con zona recomendada">
+              <svg viewBox="0 0 320 246" preserveAspectRatio="xMidYMid slice">
+                <g stroke="#dfe4ec" stroke-width="1.4">
+                  <path d="M0 40H320M0 82H320M0 124H320M0 166H320M0 208H320"/>
+                  <path d="M46 0V246M104 0V246M162 0V246M220 0V246M278 0V246"/>
+                </g>
+                <path d="M-10 210 L200 20" stroke="#cfd6e0" stroke-width="7" fill="none"/>
+                <path d="M20 260 L330 70" stroke="#cfd6e0" stroke-width="5" fill="none"/>
+              </svg>
+              <div class="heat"></div>
+              <div class="maptag">🔥 Zona con alta demanda</div>
+              <div class="pin">
+                <svg width="30" height="38" viewBox="0 0 30 38"><path d="M15 0C6.7 0 0 6.7 0 15c0 10 15 23 15 23s15-13 15-23C30 6.7 23.3 0 15 0z" fill="#FF441F"/><circle cx="15" cy="15" r="6" fill="#fff"/></svg>
+              </div>
+              <div class="youdot"><i></i></div>
+            </div>
+
+            <div class="statgrid">
+              <div class="stat"><div class="k">Mejor hora</div><div class="v">12:00–2:00 <small>p.m.</small></div></div>
+              <div class="stat"><div class="k">Ganancia estimada</div><div class="v">$14.000<small>/h</small></div></div>
+              <div class="stat"><div class="k">A tu alrededor</div><div class="v">8 <small>pedidos activos</small></div></div>
+              <div class="stat"><div class="k">Distancia</div><div class="v">1.2 <small>km</small></div></div>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="btn primary" onclick="go('searching')">Conectarme
+              <svg class="i" viewBox="0 0 24 24"><path d="M12 2v10M18.4 6.6a9 9 0 1 1-12.8 0"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- 4 · SEARCHING / ONLINE -->
+        <section class="screen" data-screen="searching">
+          <div class="searching">
+            <div class="online-chip pill green">● En línea · Chapinero</div>
+            <div class="radar"><div class="moto">🛵</div></div>
+            <div class="h-lead">Buscando tu primer pedido…</div>
+            <p class="sub" style="max-width:260px;margin-inline:auto">Quédate en la zona. Te avisamos apenas llegue uno cercano.</p>
+          </div>
+          <div class="foot">
+            <button class="btn ghost" onclick="go('order')">Simular llegada de pedido
+              <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <div class="foothint">En la app real, el pedido llega solo.</div>
+          </div>
+        </section>
+
+        <!-- 5 · NEW ORDER -->
+        <section class="screen" data-screen="order">
+          <div class="appbar">
+            <div class="pill">🎯 Tu primer pedido</div><div class="spacer"></div>
+            <div class="pill ink" id="orderTimer">Acepta en 0:18</div>
+          </div>
+          <div class="body">
+            <div class="card">
+              <div class="orderhead">
+                <div class="logo">EP</div>
+                <div style="flex:1">
+                  <div style="font-family:var(--display);font-weight:600;font-size:16px">El Corral · Parque 93</div>
+                  <div style="font-size:12.5px;color:var(--muted);margin-top:2px">Comida rápida · 2 productos</div>
+                </div>
+                <div><div class="pay">$6.800</div><div style="font-size:11px;color:var(--muted);text-align:right">pago total</div></div>
+              </div>
+              <div class="route">
+                <div class="leg"><div class="dot a"></div><div><div class="pl">Recoger en El Corral</div><div class="ad">Cra. 15 #93-60 · 4 min en moto</div></div></div>
+                <div class="leg"><div class="dot b"></div><div><div class="pl">Entregar a Valentina R.</div><div class="ad">Calle 90 #13-40, Apto 502 · 6 min</div></div></div>
+              </div>
+            </div>
+            <div class="coach" style="margin-top:12px">
+              <div class="ic">💡</div>
+              <div><b>Te guiamos paso a paso</b><p>Como es tu primer pedido, en cada pantalla te decimos exactamente qué hacer. Sin afán.</p></div>
+            </div>
+          </div>
+          <div class="foot">
+            <div class="btnrow">
+              <button class="btn ghost sm" style="flex:.5" onclick="go('searching')">Rechazar</button>
+              <button class="btn primary" style="flex:1.5" onclick="go('pickup')">Aceptar pedido</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6 · GUIDED PICKUP -->
+        <section class="screen" data-screen="pickup">
+          <div class="appbar">
+            <button class="iconbtn" aria-label="Atrás" onclick="go('order')"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <h2>Paso 1 · Recoger</h2>
+            <div class="spacer"></div><div class="pill">1 de 2</div>
+          </div>
+          <div class="body">
+            <div class="card soft" style="display:flex;gap:12px;align-items:center">
+              <div class="logo" style="border-radius:12px">EP</div>
+              <div><div style="font-family:var(--display);font-weight:600">El Corral · Parque 93</div>
+              <div style="font-size:12.5px;color:var(--ink-soft);margin-top:2px">Cra. 15 #93-60 · llegando en 4 min</div></div>
+            </div>
+
+            <div class="code">
+              <div><div class="lab">Código del comercio</div><div style="font-size:12px;color:rgba(255,255,255,.75);margin-top:2px">Dáselo en la caja para recoger</div></div>
+              <div class="num">4821</div>
+            </div>
+
+            <div class="card" style="margin-top:12px">
+              <div class="kicker">Qué hacer</div>
+              <div class="glist">
+                <div class="gitem"><div class="b">🧭</div><div><div class="tt">Ve al punto de recogida</div><div class="dd">Sigue el mapa hasta El Corral, entrada por la Cra. 15.</div></div></div>
+                <div class="gitem"><div class="b">🔢</div><div><div class="tt">Da el código 4821</div><div class="dd">El personal confirma tu pedido con ese número.</div></div></div>
+                <div class="gitem"><div class="b">🎒</div><div><div class="tt">Revisa y guarda</div><div class="dd">Confirma que estén los 2 productos antes de salir.</div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="btn dark" onclick="go('deliver')">Ya recogí el pedido
+              <svg class="i" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- 7 · GUIDED DELIVERY -->
+        <section class="screen" data-screen="deliver">
+          <div class="appbar">
+            <button class="iconbtn" aria-label="Atrás" onclick="go('pickup')"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <h2>Paso 2 · Entregar</h2>
+            <div class="spacer"></div><div class="pill">2 de 2</div>
+          </div>
+          <div class="body">
+            <div class="card soft" style="display:flex;gap:12px;align-items:center">
+              <div style="width:48px;height:48px;border-radius:12px;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:18px;flex:none">VR</div>
+              <div><div style="font-family:var(--display);font-weight:600">Valentina R.</div>
+              <div style="font-size:12.5px;color:var(--ink-soft);margin-top:2px">Calle 90 #13-40, Apto 502 · 6 min</div></div>
+            </div>
+
+            <div class="card" style="margin-top:12px">
+              <div class="kicker">Qué hacer</div>
+              <div class="glist">
+                <div class="gitem"><div class="b">🧭</div><div><div class="tt">Navega hasta el cliente</div><div class="dd">Toca el mapa para abrir la ruta hasta la Calle 90.</div></div></div>
+                <div class="gitem"><div class="b">🔔</div><div><div class="tt">Avisa que llegaste</div><div class="dd">Escribe o llama por el chat de la app, nunca por fuera.</div></div></div>
+                <div class="gitem"><div class="b">📸</div><div><div class="tt">Entrega y confirma</div><div class="dd">Marca “entregado” cuando el cliente reciba el pedido.</div></div></div>
+              </div>
+            </div>
+
+            <div class="coach" style="margin-top:12px">
+              <div class="ic">⭐</div>
+              <div><b>Casi listo</b><p>Una entrega amable sube tu calificación y te llegan mejores pedidos.</p></div>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="btn green" onclick="completeOrder()">Marcar como entregado
+              <svg class="i" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- 8 · DONE -->
+        <section class="screen" data-screen="done">
+          <div class="done-hero">
+            <div class="burst">🎉</div>
+            <h1 id="doneTitle">¡Primer pedido completado!</h1>
+            <div class="earn">+$6.800</div>
+            <p>Ya está en tu billetera</p>
+          </div>
+          <div class="body">
+            <div class="ring" data-ring style="--rs:112px;margin:6px auto 4px">
+              <svg width="112" height="112" viewBox="0 0 112 112">
+                <circle class="track" cx="56" cy="56" r="47" fill="none" stroke-width="9"></circle>
+                <circle class="fill" cx="56" cy="56" r="47" fill="none" stroke-width="9"
+                  stroke-dasharray="295.3" stroke-dashoffset="295.3"></circle>
+              </svg>
+              <div class="lbl"><b data-ring-count>1</b><span>de 10 pedidos</span></div>
+            </div>
+            <p class="sub" style="text-align:center;max-width:280px;margin-inline:auto" id="doneMsg">
+              ¡Vas por buen camino! Faltan 9 para completar tu meta de la Semana 1.</p>
+            <div class="coach" style="margin-top:16px">
+              <div class="ic">💡</div>
+              <div><b>Consejo después del pedido</b><p>Vuelve a Chapinero: sigues en hora pico y hay pedidos cerca. Encadenar pedidos sube tu ganancia por hora.</p></div>
+            </div>
+          </div>
+          <div class="foot">
+            <div class="btnrow">
+              <button class="btn ghost" style="flex:1" onclick="go('progress')">Ver progreso</button>
+              <button class="btn primary" style="flex:1.4" onclick="nextOrder()">Siguiente pedido</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9 · PROGRESS / MILESTONES -->
+        <section class="screen" data-screen="progress">
+          <div class="appbar">
+            <button class="iconbtn" aria-label="Atrás" onclick="go('done')"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <h2>Tu progreso</h2>
+          </div>
+          <div class="body">
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <div class="kicker">Meta de la Semana 1</div>
+                <div style="font-family:var(--display);font-weight:700;font-size:15px"><span data-ring-count>1</span> / 10</div>
+              </div>
+              <div class="barwrap" style="margin-top:10px"><i id="progBar" style="width:10%"></i></div>
+              <div style="font-size:12.5px;color:var(--ink-soft)">Cada pedido desbloquea nuevas funciones de la app.</div>
+            </div>
+
+            <div style="margin-top:14px" id="milestones">
+              <div class="track-item cur" data-ms="1">
+                <div class="badge">1–4</div>
+                <div><div class="tl">Primeros pedidos guiados</div><div class="dl">Pedidos cercanos y simples, con guía paso a paso.</div></div>
+              </div>
+              <div class="track-item locked" data-ms="5">
+                <div class="badge">5–9</div>
+                <div><div class="tl">Se activa la autoaceptación</div><div class="dl">Mapas de calor y pedidos automáticos para no parar.</div></div>
+                <svg class="lock i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              </div>
+              <div class="track-item locked" data-ms="10">
+                <div class="badge">10+</div>
+                <div><div class="tl">Experiencia completa</div><div class="dl">Marketplace completo, programa de lealtad y más ganancias.</div></div>
+                <svg class="lock i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="btn primary" onclick="nextOrder()">Buscar siguiente pedido</button>
+          </div>
+        </section>
+
+        <div class="homebar" id="homebar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- flow navigation -->
+  <div class="flow">
+    <div class="ttl"><span class="d"></span>Recorrido del prototipo — toca para saltar a cualquier pantalla</div>
+    <div class="chips" id="chips"></div>
+    <div class="row">
+      <button class="navbtn" onclick="step(-1)"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>Anterior</button>
+      <button class="navbtn" onclick="step(1)">Siguiente<svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button class="navbtn reset" title="Reiniciar" onclick="resetProto()"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
+    </div>
+    <div class="foothint">Estado del contador de pedidos: <b id="stateLabel">0 / 10</b></div>
+  </div>
+
+<script>
+const ORDER=['welcome','how','zone','searching','order','pickup','deliver','done','progress'];
+const LABELS={welcome:'Inicio',how:'Cómo funciona',zone:'Zona y hora',searching:'En línea',
+  order:'Nuevo pedido',pickup:'Recoger',deliver:'Entregar',done:'Completado',progress:'Progreso'};
+const DARK=new Set(['welcome','searching']); // status bar light text
+let current='welcome';
+let completed=0;
+let searchTimer=null;
+
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+function renderChips(){
+  const c=document.getElementById('chips'); c.innerHTML='';
+  ORDER.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='chip'+(s===current?' active':'');
+    b.innerHTML=`<span class="i">${i+1}</span>${LABELS[s]}`;
+    b.onclick=()=>go(s);
+    c.appendChild(b);
+  });
+}
+function setBars(){
+  const sb=document.getElementById('statusbar'), hb=document.getElementById('homebar');
+  const dark=DARK.has(current);
+  sb.classList.toggle('on-dark',dark); hb.classList.toggle('on-dark',dark);
+}
+function go(name){
+  if(searchTimer){clearTimeout(searchTimer);searchTimer=null;}
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===name));
+  current=name; renderChips(); setBars();
+  document.querySelector('.screen.active .body')?.scrollTo(0,0);
+  if(name==='searching' && !reduce){
+    searchTimer=setTimeout(()=>{ if(current==='searching') go('order'); },2200);
+  }
+  if(name==='order') startOrderTimer();
+}
+function step(d){
+  let i=ORDER.indexOf(current)+d;
+  i=Math.max(0,Math.min(ORDER.length-1,i));
+  go(ORDER[i]);
+}
+
+/* onboarding step marking */
+function markStep(el){
+  el.classList.toggle('done');
+  const total=document.querySelectorAll('[data-ostep]').length;
+  const done=document.querySelectorAll('[data-ostep].done').length;
+  const btn=document.getElementById('howBtn'), hint=document.getElementById('howHint');
+  if(done===total){
+    btn.disabled=false; btn.style.opacity='1'; btn.style.pointerEvents='auto';
+    hint.textContent='¡Listo! Ya sabes cómo funciona'; hint.className='pill green';
+  }else{
+    btn.disabled=true; btn.style.opacity='.5'; btn.style.pointerEvents='none';
+    hint.textContent=`Marca los 3 pasos para continuar (${done}/3)`; hint.className='pill ink';
+  }
+}
+
+/* order accept countdown (cosmetic) */
+let otimer=null;
+function startOrderTimer(){
+  let t=18; const el=document.getElementById('orderTimer');
+  clearInterval(otimer);
+  if(reduce){el.textContent='Acepta en 0:18';return;}
+  otimer=setInterval(()=>{
+    t--; if(t<0){t=18;}
+    el.textContent='Acepta en 0:'+String(t).padStart(2,'0');
+  },1000);
+}
+
+/* complete an order -> update rings */
+function completeOrder(){
+  completed=Math.min(10,completed+1);
+  updateRings();
+  const title=document.getElementById('doneTitle');
+  const msg=document.getElementById('doneMsg');
+  const earn=document.querySelector('[data-screen="done"] .earn');
+  const amounts=['+$6.800','+$7.400','+$5.900','+$8.200','+$6.100','+$7.800','+$6.500','+$9.100','+$7.000','+$8.600'];
+  earn.textContent=amounts[(completed-1)%amounts.length];
+  if(completed===1){ title.textContent='¡Primer pedido completado!'; }
+  else if(completed>=10){ title.textContent='¡Meta cumplida! 10 pedidos 🏆'; }
+  else{ title.textContent=`¡Pedido ${completed} completado!`; }
+  const left=10-completed;
+  msg.textContent = completed>=10
+    ? '¡Completaste tu meta de la Semana 1! Ya tienes la experiencia completa desbloqueada.'
+    : `¡Vas por buen camino! Falta${left===1?'':'n'} ${left} para completar tu meta de la Semana 1.`;
+  updateMilestones();
+  go('done');
+}
+function nextOrder(){ go('searching'); }
+
+function updateRings(){
+  const frac=completed/10;
+  document.querySelectorAll('[data-ring]').forEach(r=>{
+    const fill=r.querySelector('.fill');
+    const len=parseFloat(fill.getAttribute('stroke-dasharray'));
+    fill.style.strokeDashoffset=len*(1-frac);
+  });
+  document.querySelectorAll('[data-ring-count]').forEach(n=>n.textContent=completed);
+  const bar=document.getElementById('progBar'); if(bar) bar.style.width=(frac*100)+'%';
+  document.getElementById('stateLabel').textContent=completed+' / 10';
+}
+function updateMilestones(){
+  const set=(sel,cls)=>document.querySelectorAll(sel).forEach(e=>e.className=cls);
+  const items=document.querySelectorAll('#milestones .track-item');
+  items.forEach(it=>{
+    const m=+it.dataset.ms; it.classList.remove('cur','locked');
+    if(completed>=10){ if(m===10)it.classList.add('cur'); }
+    else if(completed>=5){ if(m===5)it.classList.add('cur'); else if(m===10)it.classList.add('locked'); }
+    else { if(m===1)it.classList.add('cur'); else it.classList.add('locked'); }
+  });
+}
+function resetProto(){
+  completed=0; updateRings(); updateMilestones();
+  document.querySelectorAll('[data-ostep].done').forEach(e=>e.classList.remove('done'));
+  markStep(document.createElement('div')); // recompute hint/btn
+  // reset how button explicitly
+  const btn=document.getElementById('howBtn'), hint=document.getElementById('howHint');
+  btn.disabled=true; btn.style.opacity='.5'; btn.style.pointerEvents='none';
+  hint.textContent='Marca los 3 pasos para continuar'; hint.className='pill ink';
+  go('welcome');
+}
+
+/* clock */
+function tick(){
+  const d=new Date();
+  document.getElementById('clock').textContent=
+    d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');
+}
+tick(); setInterval(tick,30000);
+updateRings(); updateMilestones(); renderChips(); setBars();
+</script>
+</body>
+</html>
